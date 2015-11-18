@@ -62,7 +62,6 @@ public void particle()
 public void keyPressed()
 {
   	//acceleration
-  	System.out.println(key);
   	if(key == 'w')
   	{
   		myspaceShip.accelerate(0.2);
