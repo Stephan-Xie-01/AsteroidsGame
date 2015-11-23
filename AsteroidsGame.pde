@@ -1,6 +1,7 @@
 //your variable declarations here
 Stars[] stars;
 SpaceShip myspaceShip;
+ArrayList <Asteroids> astList = new ArrayList <Asteroids>();
 public void setup() 
 {
   size(800,800);
@@ -9,16 +10,26 @@ public void setup()
   for(int i = 0; i < stars.length; i++)
   {
   	stars[i] = new Stars();
+  }
+  for(int i = 0; i < 30; i++)
+  {
+  	astList.add(new Asteroids(i));
   }  //your code here
 }
 
 boolean hyperspaceActive = true;
+
 public void draw() 
 {
   background(0);
   for(int i = 0; i < stars.length; i++)
   {
   	stars[i].show();
+  }
+  for(int i = 0; i < astList.size(); i++)
+  {
+  	astList.get(i).show();
+  	astList.get(i).move();	
   }
   myspaceShip.show();
   myspaceShip.move();
@@ -94,8 +105,69 @@ public void keyPressed()
 
   }
 
+class Asteroids extends Floater
+{
+	private int rotSpeed,myNum;
+	public Asteroids(int a)
+	{
+
+		rotSpeed = (int)((Math.random()*10) -5);
+
+		myColor = color(153, 0, 76);
+
+		corners = 8;
+		xCorners = new int[corners];
+		yCorners = new int[corners];
+		xCorners[0] = -11;
+		xCorners[1] = 0;
+		xCorners[2] = 7;
+		xCorners[3] = 13;
+		xCorners[4] = 6;
+		xCorners[5] = 0;
+		xCorners[6] = -11;
+		xCorners[7] = -7;
+
+		yCorners[0] = -8;
+		yCorners[1] = -12;
+		yCorners[2] = -8;
+		yCorners[3] = 0;
+		yCorners[4] = 10;
+		yCorners[5] = 8;
+		yCorners[6] = 10;
+		yCorners[7] = 0;
+
+		myCenterX = (Math.random()*800);
+		myCenterY = (Math.random()*800);
+		myDirectionX = (Math.random()*10) -5;
+		myDirectionY = (Math.random()*10) -5;
+
+		myNum = a;
+	}
+	public void setX(int x){myCenterX = x;}
+    public int getX(){return (int)myCenterX;}
+    public void setY(int y){myCenterY = y;}
+    public int getY(){return (int)myCenterY;}
+	public void setDirectionX(double x){myDirectionX = x;}  
+    public double getDirectionX(){return myDirectionX;}   
+  	public void setDirectionY(double y){myDirectionY = y;}
+  	public double getDirectionY(){return myDirectionY;}  
+  	public void setPointDirection(int degrees){myPointDirection = degrees;}   
+  	public double getPointDirection(){return myPointDirection;}
+
+	public void move()
+	{
+		super.move();
+		rotate(rotSpeed);
+		
+	}
+}
+
+
 class Stars
 {
+		
+		
+		
 	private int myX, myY, myColor, w;
 	public Stars()
 	{
@@ -235,5 +307,5 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     }   
     endShape(CLOSE);  
   }   
-}  
+} 
 
