@@ -29,13 +29,18 @@ public void draw()
   for(int i = 0; i < astList.size(); i++)
   {
   	astList.get(i).show();
-  	astList.get(i).move();	
+  	astList.get(i).move();
+  	if(dist(myspaceShip.getX(), myspaceShip.getY(), astList.get(i).getX(), astList.get(i).getY()) < 20)
+  	  astList.remove(i);
+
   }
   myspaceShip.show();
   myspaceShip.move();
 	
 
   particle();
+
+	
  
 
   //your code here
@@ -73,6 +78,7 @@ public void particle()
 public void keyPressed()
 {
   	//acceleration
+  	System.out.println(key);
   	if(key == 'w')
   	{
   		myspaceShip.accelerate(0.2);
@@ -160,6 +166,7 @@ class Asteroids extends Floater
 		rotate(rotSpeed);
 		
 	}
+
 }
 
 
