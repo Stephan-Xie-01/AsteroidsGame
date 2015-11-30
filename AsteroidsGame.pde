@@ -2,6 +2,7 @@
 Stars[] stars;
 SpaceShip myspaceShip;
 ArrayList <Asteroids> astList = new ArrayList <Asteroids>();
+
 public void setup() 
 {
   size(800,800);
@@ -17,32 +18,47 @@ public void setup()
   }  //your code here
 }
 
-boolean hyperspaceActive = true;
+public boolean hyperspaceActive = true;
+public boolean gameOver = false;
+public int gameScore = 0;
 
 public void draw() 
 {
   background(0);
+  //ship
+  myspaceShip.show();
+  myspaceShip.move();
+  particle();
+  
+  //stars
   for(int i = 0; i < stars.length; i++)
   {
   	stars[i].show();
   }
+
+  //asteroids
   for(int i = 0; i < astList.size(); i++)
   {
   	astList.get(i).show();
   	astList.get(i).move();
   	if(dist(myspaceShip.getX(), myspaceShip.getY(), astList.get(i).getX(), astList.get(i).getY()) < 20)
-  	  astList.remove(i);
+  	{
+  		astList.remove(i);
+  		gameOver = true;
+  		gameScore++;
+  	}
 
   }
-  myspaceShip.show();
-  myspaceShip.move();
-	
+  if(gameOver == true)
+  {
+  	myspaceShip.setX(400);
+  	myspaceShip.setY(400);
+  	myspaceShip.setPointDirection(-90);
+  	myspaceShip.setDirectionX(0);
+  	myspaceShip.setDirectionY(0);
 
-  particle();
-
-	
- 
-
+  	gameScore = 0;
+  }
   //your code here
 }
 public int wid = 10;
@@ -78,23 +94,26 @@ public void particle()
 public void keyPressed()
 {
   	//acceleration
-  	System.out.println(key);
   	if(key == 'w')
   	{
   		myspaceShip.accelerate(0.2);
+  		gameOver = false;
   	}
   	if(key == 's')
   	{
   		myspaceShip.accelerate(-0.2);
+  		gameOver = false;
   	}
   	//rotate
   	if(key == 'd')
   	{
   		myspaceShip.rotate(15);
+  		gameOver = false;
   	}
   	if(key == 'a')
   	{
   		myspaceShip.rotate(-15);
+  		gameOver = false;
   	}
   	if(key == 'h')
   	{
@@ -107,6 +126,7 @@ public void keyPressed()
   		wid = 0;
   		opac = 200;
   		hyperspaceActive = true;
+  		gameOver = false;
   	}
 
   }
@@ -144,8 +164,8 @@ class Asteroids extends Floater
 
 		myCenterX = (Math.random()*800);
 		myCenterY = (Math.random()*800);
-		myDirectionX = (Math.random()*10) -5;
-		myDirectionY = (Math.random()*10) -5;
+		myDirectionX = (Math.random()*5) -2.5;
+		myDirectionY = (Math.random()*5) -2.5;
 
 		myNum = a;
 	}
