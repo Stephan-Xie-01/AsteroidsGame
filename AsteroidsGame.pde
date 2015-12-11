@@ -46,15 +46,6 @@ public void draw()
   	buList.get(i).show();
   	buList.get(i).move();
 
-  	if(buList.get(i).getX() > 800 || buList.get(i).getX() < 0)
-  	{
-  		buList.remove(i);
-  	}
-
-  	if(buList.get(i).getY() > 800 || buList.get(i).getY() < 0)
-  	{
-  		buList.remove(i);
-  	}
   }
     //asteroids
   for(int i = astList.size() -1; i >= 0 ; i--)
