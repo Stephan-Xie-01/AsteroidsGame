@@ -2,6 +2,7 @@
 Stars[] stars;
 SpaceShip myspaceShip;
 ArrayList <Asteroids> astList = new ArrayList <Asteroids>();
+ArrayList <Bullets> buList = new ArrayList <Bullets>();
 
 public void setup() 
 {
@@ -20,7 +21,9 @@ public void setup()
 
 public boolean hyperspaceActive = true;
 public boolean gameOver = false;
+public boolean gameWin = false;
 public int gameScore = 0;
+
 
 public void draw() 
 {
@@ -36,19 +39,49 @@ public void draw()
   	stars[i].show();
   }
 
-  //asteroids
-  for(int i = 0; i < astList.size(); i++)
+//bullets
+  for(int i = 0; i < buList.size(); i++)
+  {
+  	
+  	buList.get(i).show();
+  	buList.get(i).move();
+
+  	if(buList.get(i).getX() > 800 || buList.get(i).getX() < 0)
+  	{
+  		buList.remove(i);
+  	}
+
+  	if(buList.get(i).getY() > 800 || buList.get(i).getY() < 0)
+  	{
+  		buList.remove(i);
+  	}
+  }
+    //asteroids
+  for(int i = astList.size() -1; i >= 0 ; i--)
   {
   	astList.get(i).show();
   	astList.get(i).move();
-  	if(dist(myspaceShip.getX(), myspaceShip.getY(), astList.get(i).getX(), astList.get(i).getY()) < 20)
+
+  	if(dist(myspaceShip.getX(),myspaceShip.getY(),astList.get(i).getX(),astList.get(i).getY()) < 20)
   	{
-  		astList.remove(i);
   		gameOver = true;
   		gameScore++;
   	}
 
+  	for(int k = buList.size()-1; k >= 0 ; k--)
+  	{
+  		if(dist(astList.get(i).getX(),astList.get(i).getY(),buList.get(k).getX(),buList.get(k).getY()) < 10)
+  		{
+  			gameScore++;
+  			astList.remove(i);
+  			buList.remove(k);
+  			break;
+  		}
+  	}
+
   }
+
+ 
   if(gameOver == true)
   {
   	myspaceShip.setX(400);
@@ -58,9 +91,21 @@ public void draw()
   	myspaceShip.setDirectionY(0);
 
   	gameScore = 0;
+
+  	if(astList.size() == 0)
+  	{
+  		gameWin = true;
+  	}
+  	if(gameWin == true)
+  	{
+  		fill(153, 0, 76);
+  		textSize(20);
+  		text("WIN",400,400);
+  	}
   }
   //your code here
 }
+
 public int wid = 10;
 public int opac = 200;
 public void particle()
@@ -85,12 +130,8 @@ public void particle()
 
   	ellipse(myspaceShip.getX(),myspaceShip.getY(), wid, wid);
  
-
-
 }
   		
-
-
 public void keyPressed()
 {
   	//acceleration
@@ -105,17 +146,17 @@ public void keyPressed()
   		gameOver = false;
   	}
   	//rotate
-  	if(key == 'd')
+  	if(key == 'e')
   	{
   		myspaceShip.rotate(15);
   		gameOver = false;
   	}
-  	if(key == 'a')
+  	if(key == 'q')
   	{
   		myspaceShip.rotate(-15);
   		gameOver = false;
   	}
-  	if(key == 'h')
+  	if(key == ' ')
   	{
   		myspaceShip.setX((int)(Math.random()*800));
   		myspaceShip.setY((int)(Math.random()*800));
@@ -129,8 +170,50 @@ public void keyPressed()
   		gameOver = false;
   	}
 
-  }
+}
 
+public void mousePressed()
+{
+  	buList.add(new Bullets());
+  	
+}
+
+
+class Bullets extends Floater
+{
+	double dRadians;
+	public Bullets()
+	{
+		myCenterX = myspaceShip.getX();
+		myCenterY = myspaceShip.getY();
+        
+		myPointDirection = myspaceShip.getPointDirection();
+		dRadians = myPointDirection*(Math.PI/180);
+		myDirectionX = (5* Math.cos(dRadians) + myspaceShip.getDirectionX());
+		myDirectionY = (5* Math.sin(dRadians) + myspaceShip.getDirectionY());	
+	}
+	public void move()
+	{
+		myCenterX += myDirectionX;
+		myCenterY += myDirectionY;
+	}
+	public void show()
+	{
+		fill(255);
+		noStroke();
+		ellipse(((float)myCenterX), ((float)myCenterY), 10,10);
+	}
+	public void setX(int x){myCenterX = x;}
+    public int getX(){return (int)myCenterX;}
+    public void setY(int y){myCenterY = y;}
+    public int getY(){return (int)myCenterY;}
+	public void setDirectionX(double x){myDirectionX = x;}  
+    public double getDirectionX(){return myDirectionX;}   
+  	public void setDirectionY(double y){myDirectionY = y;}
+  	public double getDirectionY(){return myDirectionY;}  
+  	public void setPointDirection(int degrees){myPointDirection = degrees;}   
+  	public double getPointDirection(){return myPointDirection;}	
+}
 class Asteroids extends Floater
 {
 	private int rotSpeed,myNum;
@@ -190,28 +273,6 @@ class Asteroids extends Floater
 }
 
 
-class Stars
-{
-		
-		
-		
-	private int myX, myY, myColor, w;
-	public Stars()
-	{
-		myX = ((int)(Math.random()*800));
-		myY = ((int)(Math.random()*800));
-		w = ((int)(Math.random()*10));
-
-	}
-
-	public void show()
-	{
-		noStroke();
-		fill(255, (int)(Math.random()*255), (int)(Math.random()*255));
-		ellipse(myX, myY, w, w);
-	}
-
-}
 class SpaceShip extends Floater  
 {   
     public SpaceShip()
@@ -257,6 +318,29 @@ class SpaceShip extends Floater
   	public void setPointDirection(int degrees){myPointDirection = degrees;}   
   	public double getPointDirection(){return myPointDirection;}
   
+}
+
+class Stars
+{
+		
+		
+		
+	private int myX, myY, myColor, w;
+	public Stars()
+	{
+		myX = ((int)(Math.random()*800));
+		myY = ((int)(Math.random()*800));
+		w = ((int)(Math.random()*10));
+
+	}
+
+	public void show()
+	{
+		noStroke();
+		fill(255, (int)(Math.random()*255), (int)(Math.random()*255));
+		ellipse(myX, myY, w, w);
+	}
+
 }
 
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
@@ -335,4 +419,3 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
     endShape(CLOSE);  
   }   
 } 
-
